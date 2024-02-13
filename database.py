@@ -38,8 +38,8 @@ def get_token(code, wallet):
         conn.close()
         return None
 
-    if code in personal.data.keys():
-        token = personal.data[code]
+    if int(code) in personal.data.keys():
+        token = personal.data[int(code)]
         cursor.execute('INSERT INTO wallets (wallet) VALUES (?)', (wallet,))
         conn.commit()
         conn.close()
