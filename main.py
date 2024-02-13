@@ -18,7 +18,9 @@ except FileNotFoundError:
 @app.get("/send")
 def send(code: str, wallet: str):
     token = database.get_token(code, wallet)
+    print(token)
     token = Address(token).to_string(is_user_friendly=True, is_test_only=config.TESTNET)
+    print(token)
     personal = False
     if token.startswith('EQ'):
         personal = True
