@@ -2,3 +2,6 @@ venv
 .env
 __pycache__
 test.py
+test2.py
+data_names.txt
+personal.py

@@ -1,4 +1,5 @@
 import sqlite3
+import personal
 
 def create_db(tokens, codes):
     conn = sqlite3.connect('database.db')
@@ -31,6 +32,19 @@ def create_db(tokens, codes):
 def get_token(code, wallet):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM wallets WHERE wallet = ?', (wallet,))
+    if cursor.fetchone() is not None:
+        conn.close()
+        return None
+
+    if code in personal.data.keys():
+        token = personal.data[code]
+        cursor.execute('INSERT INTO wallets (wallet) VALUES (?)', (wallet,))
+        conn.commit()
+        conn.close()
+        return token
+
     cursor.execute('SELECT * FROM codes WHERE code = ?', (code,))
     if cursor.fetchone() is not None:
         cursor.execute('DELETE FROM codes WHERE code = ?', (code,))
