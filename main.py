@@ -18,14 +18,14 @@ except FileNotFoundError:
 @app.get("/send")
 def send(code: str, wallet: str):
     token = database.get_token(code, wallet)
+    if token is None:
+        raise HTTPException(status_code=401, detail="Already used code or wallet")
     print(token)
     token = Address(token).to_string(is_user_friendly=True, is_test_only=config.TESTNET)
     print(token)
     personal = False
     if token.startswith('EQ'):
         personal = True
-    if token is None:
-        raise HTTPException(status_code=401, detail="Already used code or wallet")
     
     print('Init client')
     client = TonCenterClient(
