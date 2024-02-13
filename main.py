@@ -18,22 +18,30 @@ except FileNotFoundError:
 @app.get("/send")
 def send(code: str, wallet: str):
     token = database.get_token(code, wallet)
-    print(token)
+    token = Address(token).to_string(is_user_friendly=True, is_test_only=config.TESTNET)
+    personal = False
+    if token.startswith('EQ'):
+        personal = True
     if token is None:
         raise HTTPException(status_code=401, detail="Already used code or wallet")
     
+    print('Init client')
     client = TonCenterClient(
         key=config.TONCENTER_API, 
         orbs_access=True,
         testnet=config.TESTNET)
     
+    print('Init wallet')
     operation_wallet = Wallet(provider=client, mnemonics=config.MNEMONIC, version='v4r2')
     
+    print('Sending...')
     try:
         resp = asyncio.run(operation_wallet.transfer_nft(destination_address=wallet, nft_address=token, fee=0.1))
+        print(resp)
         if resp != 200:
             raise Exception('Operation wallet transaction error')
         return {"response": resp}
     except Exception as e:
-        database.undo(token, code, wallet)
+        if personal is False:
+            database.undo(token, code, wallet)
         raise HTTPException(status_code=500, detail='Sending error, try again! ' + str(e))
