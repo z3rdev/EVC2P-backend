@@ -6,6 +6,7 @@ import asyncio
 
 import config
 import database
+from personal import data as personal_data
 
 app = FastAPI()
 
@@ -21,10 +22,9 @@ def send(code: str, wallet: str):
     if token is None:
         raise HTTPException(status_code=401, detail="Already used code or wallet")
     print(token)
-    token = Address(token).to_string(is_user_friendly=True, is_test_only=config.TESTNET)
-    print(token)
+    # token = Address(token).to_string(is_user_friendly=True, is_test_only=config.TESTNET)
     personal = False
-    if token.startswith('EQ'):
+    if token in personal_data.values():
         personal = True
     
     print('Init client')
