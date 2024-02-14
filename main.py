@@ -10,6 +10,9 @@ from personal import data as personal_data
 
 app = FastAPI()
 
+print(config.TESTNET)
+print(config.TONCENTER_API)
+
 try:
     open('database.db')
 except FileNotFoundError:
