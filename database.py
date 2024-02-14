@@ -66,6 +66,8 @@ def get_token(code, wallet):
             return None
         
 def undo(token, code, wallet):
+    if code in personal.data.keys():
+        return
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     cursor.execute('INSERT INTO tokens (token) VALUES (?)', (token,))
