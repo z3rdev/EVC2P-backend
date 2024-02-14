@@ -33,7 +33,7 @@ def send(code: str, wallet: str):
     print('Init client')
     client = TonCenterClient(
         key=config.TONCENTER_API, 
-        orbs_access=True,
+        orbs_access=False,
         testnet=config.TESTNET)
     
     print('Init wallet')
